@@ -19,7 +19,7 @@ To install this extension, follow these steps:
 
 ## Usage
 
-To use this extension, you need to have the text-generation-webui API running on your local machine or a remote server. You can find the instructions on how to set up the text-generation-webui API [here].
+To use this extension, you need to have the text-generation-webui API running on your local machine or a remote server. You can find the instructions on how to set up the text-generation-webui API [here](https://github.com/oobabooga/text-generation-webui).
 
 Once you have the text-generation-webui API running, you need to configure the extension settings. To do this, click on the extension icon and go to "Options". There, you can enter the URL of the text-generation-webui API endpoint, such as http://localhost:5000 or http://your-server.com:5000. You can also adjust the parameters of the text-generation-webui API, such as length, temperature, top_p, and frequency_penalty. You can also select the model and language you want to use.
 
