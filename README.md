@@ -1,6 +1,6 @@
 # Text-Generation-WebUI Chrome Extension
 
-This is a chrome extension that allows you to interact with the [text-generation-webui] API to have self hosted AI writing tools integrated on your browser. You can use this extension to generate text for various purposes, such as writing essays, stories, poems, code, and more.
+This is a chrome extension that allows you to interact with the [text-generation-webui](https://github.com/oobabooga/text-generation-webui) API to have self hosted AI writing tools integrated on your browser. You can use this extension to generate text for various purposes, such as writing essays, stories, poems, code, and more.
 
 ## Features
 
