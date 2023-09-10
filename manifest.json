@@ -3,6 +3,7 @@
 	"description": "A Google Chrome extension!",
 	"version": "1.0",
 	"manifest_version": 3,
+	"options_page": "options.html",
 	"permissions": [
 		"contextMenus",
 		"notifications",
