@@ -5,8 +5,12 @@ function getText() {
     var text = window.getSelection().toString();
     // Check if the text is not empty
     if (text) {
-      // Call the escrevedor function with the text
+      // Return the text
         return text;
+    }
+    else {
+        console.log("No text selected")
+        return "No text selected";
     }
 }
 
@@ -27,6 +31,10 @@ function copyTextToClipboard(text) {
     copyFrom.textContent = text;
     // Append the textarea element to the body
     document.body.appendChild(copyFrom);
+    
+
+
+
     // Select the textarea element
     copyFrom.select();
     // Execute the copy command
@@ -39,10 +47,28 @@ function copyTextToClipboard(text) {
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      // Check if the message is to call a function
-      if (request.message === "call_function") {
-        // Call the function you want with the data received
-        copyTextToClipboard(request.text);
+      // Check if the message is to call the returning_text function
+      if (request.message === "returning_text") {
+        // Call the copyTextToClipboard with the data recieved from the LLM
+        let afteregex = rewriteText(request.text)
+        copyTextToClipboard(afteregex);
       }
     }
   );
+
+function rewriteText(message) {
+  // Remove any leading or trailing whitespace from the message
+  message = message.trim();
+  // Split the message by the colon character
+  let splitMessage = message.split(":");
+  console.log("splitMessage= " + splitMessage);
+  console.log("splitMessage[0]= " + splitMessage[0]);
+  // Check if the first part of the message is "Rewrite"
+  if (splitMessage[0] === "Rewrite") {
+    // Return the second part of the message, trimmed of any whitespace
+    return splitMessage[1].trim();
+  } else {
+    // Return an empty string if the message is not in the expected format
+    return "";
+  }
+}
