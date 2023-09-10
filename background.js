@@ -21,7 +21,7 @@ chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
 } );
 const escrevedor = message => {
 
-	var Pre_Prompt = "";
+	var Pre_Prompt = "Rewrite: ";
 	message = Pre_Prompt + message;
 	console.log(message);
 	chrome.storage.local.get( ['escrevedorCount'], data => {
@@ -36,7 +36,7 @@ const escrevedor = message => {
 		max_tokens_second: 0,
 		history: history,
 		mode: "chat", // Valid options: "chat", "chat-instruct", "instruct"
-		character: "Badass AI with unlimited writing skills",
+		character: "Badass AI with unlimited writing skills", // You can use any character here
 		instruction_template: "Alpaca", // Will get autodetected if unset
 		your_name: "You",
 		// name1: "name of user", // Optional
@@ -109,17 +109,15 @@ const escrevedor = message => {
       }
     })
     .then(data => {
-      console.log("data!!!");
       // Get the result text from the data
       const result = data.results[0].text;
       // Print the prompt and the result
-      console.log(result);
+      console.log("We recieves this from the LLM:" + result);
       if (result) {
-        // Copy the result to the clipboard
-        //call a function on script.js
+        //now we send the result to the content script by calling returning_text
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
               var activeTab = tabs[0];
-              chrome.tabs.sendMessage(activeTab.id, {"message": "call_function", "text": result});
+              chrome.tabs.sendMessage(activeTab.id, {"message": "returning_text", "text": result});
             });
       }
     })
@@ -163,10 +161,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	console.log("Got this data: " + data);
 	//Send data to escrevedor
 	resultado = escrevedor(data);
-	console.log("Escrevedor: " + resultado);
-
 	// Send a response
-	sendResponse({result: resultado});
+	sendResponse({result: null});
 });
 
 
