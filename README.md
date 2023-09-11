@@ -1,6 +1,6 @@
-# Escrevedor - Self Hosted AI Writing helper
+# Caipirinha Rewriter: Spice up your text with your own self-hosted AI
 
-This is a chrome extension that allows you to interact with a self hosted LLM model to have AI writing tools integrated on your browser. You can use this extension to rewrite text for various purposes, such as writing essays, stories, poems, code, and more.
+This is a Chrome extension that integrates an AI-powered writing tool into your browser, allowing you to interact with a self-hosted LLM model for rewriting text. With this extension, you can rewrite text for various purposes, such as essays, stories, poems, code, and more.
 
 ## Features
 
@@ -25,9 +25,18 @@ pip install ctransformers
 ```
 After that you can start the server with
 ```sh
-python server.py
+python server.py -p [what port to open the server] -model [what model to load]
 ```
-It will use by default port 5000
+if not specified will use port 5000
+
+After that you can go on any webpage and highlight a text, when you press CTRL+D it will send the text to the server with the prompt:
+```sh
+	### HUMAN:
+  Rewrite this with proper grammar and more concise writing style: ";
+	### RESPONSE:
+  Rewrite: ";
+```
+Currently, I have tested the application only on [Llama2-7b-chat-uncensored](https://huggingface.co/TheBloke/llama2_7b_chat_uncensored-GGML)
 
 ## Issues
 
