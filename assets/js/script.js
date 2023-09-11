@@ -18,11 +18,11 @@ function getText() {
 var output = getText();
 // Send a message to background.js with the output as data
 chrome.runtime.sendMessage({type: 'script.js_call', message: output}, function(response) {
-  // Do something with the response from background.js, if needed
+  // Set the cursor to wait
+  document.body.style.cursor = 'wait';
   console.log("enviei pro background");
     // Copy the result to the clipboard
 });
-
 
 
 
@@ -31,6 +31,8 @@ function copyTextToClipboard(text) {
     var copyFrom = document.createElement("textarea");
     // Set the text content to be the text parameter
     copyFrom.textContent = text;
+    // Set the cursor back to default
+    document.body.style.cursor = "default";
     // Append the textarea element to the body
     document.body.appendChild(copyFrom);
     
