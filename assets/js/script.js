@@ -50,25 +50,7 @@ function copyTextToClipboard(text) {
       // Check if the message is to call the returning_text function
       if (request.message === "returning_text") {
         // Call the copyTextToClipboard with the data recieved from the LLM
-        let afteregex = rewriteText(request.text)
-        copyTextToClipboard(afteregex);
+        copyTextToClipboard(request.text);
       }
     }
   );
-
-function rewriteText(message) {
-  // Remove any leading or trailing whitespace from the message
-  message = message.trim();
-  // Split the message by the colon character
-  let splitMessage = message.split(":");
-  console.log("splitMessage= " + splitMessage);
-  console.log("splitMessage[0]= " + splitMessage[0]);
-  // Check if the first part of the message is "Rewrite"
-  if (splitMessage[0] === "Rewrite") {
-    // Return the second part of the message, trimmed of any whitespace
-    return splitMessage[1].trim();
-  } else {
-    // Return an empty string if the message is not in the expected format
-    return "";
-  }
-}

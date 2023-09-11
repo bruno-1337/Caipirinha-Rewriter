@@ -21,8 +21,9 @@ chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
 } );
 const escrevedor = message => {
 
-	var Pre_Prompt = "Rewrite: ";
-	message = Pre_Prompt + message;
+	var Pre_Prompt = "### HUMAN:\nRewrite this with proper grammar and more concise writing style: ";
+	var Post_Prompt = "\n### RESPONSE:\nRewrite: ";
+	message = Pre_Prompt + message + Post_Prompt;
 	console.log(message);
 	chrome.storage.local.get( ['escrevedorCount'], data => {
 		let value = data.escrevedorCount || 0;
@@ -30,64 +31,12 @@ const escrevedor = message => {
 	} );
 	// Define the request parameters
 	const request = {
-		prompt: message,
-		max_new_tokens: 250,
-		auto_max_new_tokens: false,
-		max_tokens_second: 0,
-		history: history,
-		mode: "chat", // Valid options: "chat", "chat-instruct", "instruct"
-		character: "Badass AI with unlimited writing skills", // You can use any character here
-		instruction_template: "Alpaca", // Will get autodetected if unset
-		your_name: "You",
-		// name1: "name of user", // Optional
-		// name2: "name of character", // Optional
-		// context: "character context", // Optional
-		// greeting: "greeting", // Optional
-		// name1_instruct: "You", // Optional
-		// name2_instruct: "Assistant", // Optional
-		// context_instruct: "context_instruct", // Optional
-		// turn_template: "turn_template", // Optional
-		regenerate: false,
-		_continue: false,
-		//chat_instruct_command:'Continue the chat dialogue below. Write a single reply for the character "<|character|>".\n\n<|prompt|>',
-	
-		// Generation params. If 'preset' is set to different than 'None', the values
-		// in presets/preset-name.yaml are used instead of the individual numbers.
-		preset: "None",
-		do_sample: true,
-		temperature: 0.7,
-		top_p: 0.1,
-		typical_p: 1,
-		epsilon_cutoff: 0, // In units of 1e-4
-		eta_cutoff: 0, // In units of 1e-4
-		tfs: 1,
-		top_a: 0,
-		repetition_penalty: 1.18,
-		repetition_penalty_range: 0,
-		top_k: 40,
-		min_length: 0,
-		no_repeat_ngram_size: 0,
-		num_beams: 1,
-		penalty_alpha: 0,
-        length_penalty: 1,
-        early_stopping: false,
-        mirostat_mode: 0,
-        mirostat_tau: 5,
-        mirostat_eta: 0.1,
-        guidance_scale: 1,
-        negative_prompt: "",
-	
-        seed: -1,
-        add_bos_token: true,
-        truncation_length: 2048,
-        ban_eos_token: false,
-        skip_special_tokens: true,
-        stopping_strings: [],
+		prompt: message
     };
   
     // Send a POST request to the URI
     const HOST = 'localhost:5000';
-    const URI = `http://${HOST}/api/v1/generate`;
+    const URI = `http://${HOST}/generate`;
     fetch(URI, {
       method: 'POST',
       headers: {
@@ -110,7 +59,7 @@ const escrevedor = message => {
     })
     .then(data => {
       // Get the result text from the data
-      const result = data.results[0].text;
+      const result = data
       // Print the prompt and the result
       console.log("We recieves this from the LLM:" + result);
       if (result) {
