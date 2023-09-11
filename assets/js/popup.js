@@ -22,7 +22,7 @@ reset.addEventListener( 'click', () => {
 
 escrevedor.addEventListener( 'click', () => {
 	chrome.runtime.sendMessage( '', {
-		type: 'notification',
+		type: 'escrevedor_popup_button',
 		message: text.value
 	});
 } );

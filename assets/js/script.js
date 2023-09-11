@@ -17,11 +17,13 @@ function getText() {
 // Get the output of your function
 var output = getText();
 // Send a message to background.js with the output as data
-chrome.runtime.sendMessage({data: output}, function(response) {
+chrome.runtime.sendMessage({type: 'script.js_call', message: output}, function(response) {
   // Do something with the response from background.js, if needed
   console.log("enviei pro background");
     // Copy the result to the clipboard
 });
+
+
 
 
 function copyTextToClipboard(text) {

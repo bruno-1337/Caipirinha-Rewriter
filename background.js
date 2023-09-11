@@ -1,7 +1,12 @@
 chrome.runtime.onMessage.addListener( data => {
-	if ( data.type === 'notification' ) {
+	if ( data.type === 'escrevedor_popup_button' ) {
+    console.log("CALLED ME HERE!")
 		escrevedor( data.message );
 	}
+  if ( data.type === 'script.js_call' ) {
+    console.log("CALLING ESCREVEDOR#$#@$!!!")
+    escrevedor( data.message );
+  }
 });
 
 chrome.runtime.onInstalled.addListener( () => {
@@ -16,6 +21,7 @@ let history = { internal: [], visible: [] };
 
 chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
 	if ( 'escrevedor' === info.menuItemId ) {
+    console.log("CALLED ME HERE!!!")
 		escrevedor( info.selectionText );
 	}
 } );
@@ -101,17 +107,5 @@ function injectScript() {
 	});
   }
 
-
-// Listen for messages from script.js
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	// Get the data from the message
-	var data = message.data;
-	// Do something with the data, such as calling another function
-	console.log("Got this data: " + data);
-	//Send data to escrevedor
-	resultado = escrevedor(data);
-	// Send a response
-	sendResponse({result: null});
-});
 
 
