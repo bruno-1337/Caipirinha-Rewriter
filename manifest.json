@@ -1,7 +1,7 @@
 {
-	"name": "Escrevedor",
-	"description": "A Google Chrome extension!",
-	"version": "1.0",
+	"name": "Caipirinha Rewriter",
+	"description": "Spice up your text with your own self-hosted AI",
+	"version": "0.1",
 	"manifest_version": 3,
 	"options_page": "options.html",
 	"permissions": [
@@ -31,9 +31,9 @@
 	"commands": {
 		"Reescrever_Command": {
 		  "suggested_key": {
-			"default": "Ctrl+X"
+			"default": "Ctrl+D"
 		  },
-		  "description": "Call Escrevedor",
+		  "description": "Call Caipirinha Rewritter",
 		  "global": true
 		}
 	  }

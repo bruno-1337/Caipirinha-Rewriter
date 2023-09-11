@@ -1,24 +1,16 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>My Test Extension Options</title>
-  </head>
-  <body>
-    <select id="color">
-      <option value="red">red</option>
-      <option value="green">green</option>
-      <option value="blue">blue</option>
-      <option value="yellow">yellow</option>
-    </select>
+<head>
+</head>
+<body>
+  <form id="options-form">
+    <label for="server-ip">Server IP address:</label>
 
-    <label>
-      <input type="checkbox" id="like" />
-      I like colors.
-    </label>
-
-    <div id="status"></div>
-    <button id="save">Save</button>
-
-    <script src="/assets/js/options.js"></script>
-  </body>
+    <input type="text" id="server-ip" name="server-ip"><br>
+    <label for="server-port">Server port:</label>
+    <input type="text" id="server-port" name="server-port"><br>
+    <input type="button" id="save-button" value="Save">
+  </form>
+  <script src="assets/js/options.js"></script>
+</body>
 </html>
+

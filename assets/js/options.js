@@ -1,32 +1,51 @@
-// Saves options to chrome.storage
-const saveOptions = () => {
-    const color = document.getElementById('color').value;
-    const likesColor = document.getElementById('like').checked;
+// Get the current prompt from storage and display it
+chrome.storage.sync.get("prompt", function(data) {
+  document.getElementById("current-prompt").textContent = data.prompt;
+});
+
+// Get the server IP and port from storage and fill in the input fields
+chrome.storage.sync.get(["ip", "port"], function(data) {
+  document.getElementById("server-ip").value = data.ip;
+  document.getElementById("server-port").value = data.port;
+});
+
+// Add a click event listener to the save button
+document.getElementById("save-button").addEventListener("click", function() {
+  // Get the new prompt from the input field
+  var newPrompt = document.getElementById("new-prompt").value;
+  // Get the server IP and port from the input fields
+  var serverIp = document.getElementById("server-ip").value;
+  var serverPort = document.getElementById("server-port").value;
+  // Validate the input values
+  /*
+  if (newPrompt) {
+    // Save the new prompt to storage
+    chrome.storage.sync.set({
+      prompt: newPrompt
+    }, function() {
+      // Display a confirmation message
+      console.log("Saved the new prompt!")
+    });}
+  */
+  if (serverIp) {
+    // Save the new server IP to storage
+    chrome.storage.sync.set({
+      ip: serverIp
+    }, function() {
+      console.log("Saved the new IP!")
+    });}
+  if (serverPort) {
+    // Save the new server port to storage
+    chrome.storage.sync.set({
+      port: serverPort
+    }, function() {
+      console.log("Options the new Port!")
+    });
   
-    chrome.storage.sync.set(
-      { favoriteColor: color, likesColor: likesColor },
-      () => {
-        // Update status to let user know options were saved.
-        const status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        setTimeout(() => {
-          status.textContent = '';
-        }, 750);
-      }
-    );
-  };
-  
-  // Restores select box and checkbox state using the preferences
-  // stored in chrome.storage.
-  const restoreOptions = () => {
-    chrome.storage.sync.get(
-      { favoriteColor: 'red', likesColor: true },
-      (items) => {
-        document.getElementById('color').value = items.favoriteColor;
-        document.getElementById('like').checked = items.likesColor;
-      }
-    );
-  };
-  
-  document.addEventListener('DOMContentLoaded', restoreOptions);
-  document.getElementById('save').addEventListener('click', saveOptions);
+  } else {
+    // Display an error message
+    alert("Please enter valid values!");
+    console.log("Please enter valid values!")
+  }
+  alert("Saved the new settings!!")
+});

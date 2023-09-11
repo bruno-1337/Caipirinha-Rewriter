@@ -68,17 +68,14 @@ def gettingAlpaca(prompt):
     if llm is None:
         print("Model is not loaded!")
         llm = load_model()
+        time.sleep(3)#Need to find a better way to do this, as loading a bigger model takes longer
     #send the prompt to the model and get the output
     output = llm(prompt)
-    #get the number of tokens
+    #get the tokens per second
     num_tokens = len(output)
-    #get the time it took to generate the output
     end_time = time.time()
-    # Compute the time elapsed in seconds
     elapsed_time = end_time - start_time
-    # Compute the tokens per second
     tokens_per_second = num_tokens / elapsed_time
-    #print the output then return it
     print (output)
     #print the tokens per second
     print(f"\n\n#Tokens per second: {tokens_per_second}")
@@ -87,7 +84,6 @@ def gettingAlpaca(prompt):
 def load_model():
     #load the model
     print("Loading model...")
-    # Use ctransformers to load the model
     global llm
     llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
     print("Model loaded!")
@@ -97,15 +93,12 @@ def unload_model():
     # Unload the model
     global llm
     llm = None
-    # Print a message to confirm
     print("Model unloaded!")
 
 def check_and_unload():
     global last_request_time
     global llm
-    #get the current time
     current_time = time.time()
-    #calculate the difference in seconds
     difference = current_time - last_request_time
     #if the difference is more than 180 seconds, unload the model
     if llm is not None and difference > 180:

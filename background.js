@@ -17,7 +17,12 @@ chrome.runtime.onInstalled.addListener( () => {
 	});
 });
 
-let history = { internal: [], visible: [] };
+
+
+
+
+var serverIP = "1234";
+var serverPort = "1234";
 
 chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
 	if ( 'escrevedor' === info.menuItemId ) {
@@ -30,6 +35,7 @@ const escrevedor = message => {
 	var Pre_Prompt = "### HUMAN:\nRewrite this with proper grammar and more concise writing style: ";
 	var Post_Prompt = "\n### RESPONSE:\nRewrite: ";
 	message = Pre_Prompt + message + Post_Prompt;
+  
 	console.log(message);
 	chrome.storage.local.get( ['escrevedorCount'], data => {
 		let value = data.escrevedorCount || 0;
@@ -39,9 +45,18 @@ const escrevedor = message => {
 	const request = {
 		prompt: message
     };
+    
+
+    // Get the server IP and port from storage
+    chrome.storage.sync.get(["ip", "port"], function(data) {
+      serverIP = data.ip;
+      serverPort = data.port;
+      console.log("IP: " + serverIP + " PORT: " + serverPort);
+    });
   
     // Send a POST request to the URI
-    const HOST = 'localhost:5000';
+    
+    const HOST = serverIP+":"+serverPort;
     const URI = `http://${HOST}/generate`;
     fetch(URI, {
       method: 'POST',
