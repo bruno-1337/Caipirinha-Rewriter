@@ -6,6 +6,7 @@ chrome.runtime.onMessage.addListener( data => {
   if ( data.type === 'script.js_call' ) {
     console.log("CALLING ESCREVEDOR#$#@$!!!")
     escrevedor( data.message );
+    return true;
   }
 });
 
@@ -24,6 +25,7 @@ chrome.runtime.onInstalled.addListener( () => {
 var serverIP = "1234";
 var serverPort = "1234";
 var Language = "";
+var Pre_Prompt = "";
 
 chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
 	if ( 'escrevedor' === info.menuItemId ) {
@@ -35,14 +37,7 @@ const escrevedor = message => {
 
 
   // Get the server IP and port from storage
-  chrome.storage.sync.get(["ip", "port", "language"], function(data) {
-    serverIP = data.ip;
-    serverPort = data.port;
-    Language = data.language;
-    console.log("IP: " + serverIP + " PORT: " + serverPort);
-  });
   
-	var Pre_Prompt = "### HUMAN:\nRewrite this with proper grammar and more concise writing style, you will rewrite in the same language as the next message: ";
 	if (Language == "") {
     var Post_Prompt = "\n### RESPONSE:\nRewrite: ";
   }
@@ -119,6 +114,14 @@ function injectScript() {
 chrome.commands.onCommand.addListener((command) => {
   if (command == "Reescrever_Command") {
 	// Get the selected text
+  chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) {
+    serverIP = data.ip;
+    serverPort = data.port;
+    Language = data.language;
+    Pre_Prompt = data.pre_prompt;
+    console.log(Pre_Prompt)
+    console.log("IP: " + serverIP + " PORT: " + serverPort);
+  });
 	injectScript();
 	//getText();
 	// Call our function with the selected text as an argument
