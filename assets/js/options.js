@@ -1,7 +1,7 @@
-// Get the current prompt from storage and display it
+/* Get the current prompt from storage and display it
 chrome.storage.sync.get("prompt", function(data) {
   document.getElementById("current-prompt").textContent = data.prompt;
-});
+});*/
 
 // Get the server IP and port from storage and fill in the input fields
 chrome.storage.sync.get(["ip", "port"], function(data) {

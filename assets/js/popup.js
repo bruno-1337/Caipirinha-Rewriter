@@ -26,6 +26,14 @@ escrevedor.addEventListener( 'click', () => {
 		message: text.value
 	});
 } );
+document.querySelector('#go-to-options').addEventListener('click', function() {
+	if (chrome.runtime.openOptionsPage) {
+	  chrome.runtime.openOptionsPage();
+	} else {
+	  window.open(chrome.runtime.getURL('options.html'));
+	}
+  });
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	// Check if the message is to call our function
