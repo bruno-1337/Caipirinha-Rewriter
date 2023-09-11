@@ -29,6 +29,9 @@ python server.py -p [what port to open the server] -model [what model to load]
 ```
 if not specified will use port 5000
 
+After starting the server, open your browser and navigate to the options of the extension. 
+Enter the IP address (use "localhost" if local) and port number and save
+
 After that you can go on any webpage and highlight a text, when you press CTRL+D it will send the text to the server with the prompt:
 ```sh
 	### HUMAN:
