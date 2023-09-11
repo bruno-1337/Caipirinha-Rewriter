@@ -1,15 +1,32 @@
 from ctransformers import AutoModelForCausalLM
-import json
-# Import the Flask library
 from flask import Flask, request, jsonify
 from flask_cors import cross_origin, CORS
 from flask_apscheduler import APScheduler
-import time
+import time 
+import argparse
+
+# Define a custom formatter class
+class MyFormatter(argparse.HelpFormatter):
+    # Override the _format_action_invocation method
+    def _format_action_invocation(self, action):
+        # If the action has any option strings, use them
+        if action.option_strings:
+            # Join the option strings with commas and brackets
+            parts = [f"[{option_string}]" for option_string in action.option_strings]
+            return ", ".join(parts)
+        # Otherwise, use the default implementation
+        else:
+            return super()._format_action_invocation(action)
+
+# Create an ArgumentParser object with the custom formatter class
+parser = argparse.ArgumentParser("simple_example", formatter_class=MyFormatter)
+parser.add_argument("-m", "-model", help="model to use", type=str, dest="model")
+parser.add_argument("-p", "-port", help="port the server will use", type=str, dest="port")
+args = parser.parse_args()
+ourmodel = args.model
 
 llm = None
 last_request_time = time.time()
-#Location of the model
-ourmodel = "../../AI/models/converted.bin"
 #model type
 model_type="llama"
 #how many gpu_layers to use
@@ -67,7 +84,6 @@ def gettingAlpaca(prompt):
     print(f"\n\n#Tokens per second: {tokens_per_second}")
     return output
 
-
 def load_model():
     #load the model
     print("Loading model...")
@@ -91,7 +107,7 @@ def check_and_unload():
     current_time = time.time()
     #calculate the difference in seconds
     difference = current_time - last_request_time
-    #if the difference is more than 60 seconds, unload the model
+    #if the difference is more than 180 seconds, unload the model
     if llm is not None and difference > 180:
         llm = unload_model()
 
@@ -99,11 +115,16 @@ def check_and_unload():
 scheduler.add_job(func=check_and_unload, trigger='interval', seconds=60, id='check_and_unload_job')
 
 
-# Run the app on port 5000 with debug mode on
+# Check if args.port have been set, if not, set it to 5000
+if args.port is None:
+    print("No port specified, using 5000")
+    args.port = 5000
+
+# Run the app
 if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
-    app.run(port=5000, debug=True)
+    app.run(port=args.port, debug=True)
     
     
 
