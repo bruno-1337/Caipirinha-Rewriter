@@ -49,6 +49,10 @@ def generate():
     # Get the data from the request body as JSON
     data = request.get_json()
     # Get the prompt from the data
+    global llm
+    if llm is None:
+        print("Model is not loaded!")
+        llm = load_model()
     prompt = data["prompt"]
     # Call the function with the prompt and get the output
     output = gettingAlpaca(prompt)
@@ -64,11 +68,11 @@ def gettingAlpaca(prompt):
     # Update the last request time with the current time
     last_request_time = time.time()
     # If the model is not loaded, load it first
-    global llm
-    if llm is None:
-        print("Model is not loaded!")
-        llm = load_model()
-        time.sleep(3)#Need to find a better way to do this, as loading a bigger model takes longer
+    #global llm
+    #if llm is None:
+    #    print("Model is not loaded!")
+    #    llm = load_model()
+        #time.sleep(3)#Need to find a better way to do this, as loading a bigger model takes longer
     #send the prompt to the model and get the output
     output = llm(prompt)
     #get the tokens per second
