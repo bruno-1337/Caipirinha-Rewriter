@@ -32,7 +32,7 @@ if not specified will use port 5000
 After that you can go on any webpage and highlight a text, when you press CTRL+D it will send the text to the server with the prompt:
 ```sh
 	### HUMAN:
-  Rewrite this with proper grammar and more concise writing style: ";
+  Rewrite this with proper grammar and more concise writing style: [HIGHLIGHTED_TEXT]";
 	### RESPONSE:
   Rewrite: ";
 ```
