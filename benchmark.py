@@ -154,6 +154,7 @@ def unload_model():
 selector = input("Select benchmark option (First run GPU Layers, then Threads):\n1. Benchmark GPU layers\n2. Benchmark threads\n3. Exit\n")
 if selector == "1":
     print("Benchmarking GPU layers")
+    threads = int(input("How many threads do you want to use?\n"))
     gpu_layers = 1
     benchmark_gpu_layers(gpu_layers)
 if selector == "2":
