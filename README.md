@@ -1,4 +1,4 @@
-# Caipirinha Rewriter: Spice up your text with your own self-hosted AI
+# [Caipirinha Rewriter](https://github.com/bruno-1337/Caipirinha-Rewriter/) 🍹
 
 This is a Chrome extension that integrates an AI-powered writing tool into your browser, allowing you to interact with a self-hosted LLM model for rewriting text. With this extension, you can rewrite text for various purposes, such as essays, stories, poems, code, and more.
 
