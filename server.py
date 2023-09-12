@@ -5,38 +5,35 @@ from flask_apscheduler import APScheduler
 import time 
 import argparse
 
-# Define a custom formatter class
+# Argument Parser
 class MyFormatter(argparse.HelpFormatter):
-    # Override the _format_action_invocation method
     def _format_action_invocation(self, action):
-        # If the action has any option strings, use them
         if action.option_strings:
-            # Join the option strings with commas and brackets
             parts = [f"[{option_string}]" for option_string in action.option_strings]
             return ", ".join(parts)
-        # Otherwise, use the default implementation
         else:
             return super()._format_action_invocation(action)
-
-# Create an ArgumentParser object with the custom formatter class
 parser = argparse.ArgumentParser("simple_example", formatter_class=MyFormatter)
 parser.add_argument("-m", "-model", help="model to use", type=str, dest="model")
 parser.add_argument("-p", "-port", help="port the server will use", type=str, dest="port")
 args = parser.parse_args()
+# Get the model from the arguments
 ourmodel = args.model
 
+
+#setting default variables
 llm = None
 last_request_time = time.time()
-#model type
 model_type="llama"
-#how many gpu_layers to use
-gpu_layers=25 
-#how many tokens to generate
+#how many gpu layers to use (run benchmark.py to get optimal value)
+gpu_layers=34
 max_new_tokens=256
-#temperature of the model
 temperature=0.8
-#repetition penalty
 repetition_penalty=1.1
+#how many threads to use (run benchmark.py to get optimal value)
+threads=8
+
+
 scheduler = APScheduler()
 
 # Create a Flask app object
@@ -67,13 +64,6 @@ def gettingAlpaca(prompt):
     global last_request_time
     # Update the last request time with the current time
     last_request_time = time.time()
-    # If the model is not loaded, load it first
-    #global llm
-    #if llm is None:
-    #    print("Model is not loaded!")
-    #    llm = load_model()
-        #time.sleep(3)#Need to find a better way to do this, as loading a bigger model takes longer
-    #send the prompt to the model and get the output
     output = llm(prompt)
     #get the tokens per second
     num_tokens = len(output)
@@ -87,10 +77,12 @@ def gettingAlpaca(prompt):
 
 def load_model():
     #load the model
+    timer = time.time()
     print("Loading model...")
     global llm
-    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
+    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type,threads=threads, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
     print("Model loaded!")
+    print(f"Time taken to load model: {time.time() - timer}")
     return llm
 
 def unload_model():
