@@ -39,7 +39,8 @@ threads=1
 besttime=99999
 bestlayers=0
 rounds_without_improvement=0
-prompt = "### HUMAN:\nRewrite this using proper grammar and with a best seller writing style:\n The Kilauea Volcano in Hawaii, one of the world's most active volcanoes, has started erupting, unleashing lava fountains inside its crater.\n###RESPONSE:\nRewrite:"
+batch_size=8
+prompt = "### HUMAN:\nRewrite this using proper grammar more concise writing style:\n The Kilauea Volcano in Hawaii, one of the world's most active volcanoes, has started erupting, unleashing lava fountains inside its crater.\n###RESPONSE:\nRewrite:"
 
 def benchmark_gpu_layers(layers):
     #model type
@@ -52,12 +53,12 @@ def benchmark_gpu_layers(layers):
     global prompt
     timer = time.time()
     try:
-        print(f"\nNext test! Trying to load model with {gpu_layers} layers")
+        print(f"\n#Next test! Trying to load model with {gpu_layers} layers")
         load_model()
         gettingAlpaca(prompt)
         unload_model()
     except RuntimeError:
-        print("Oops! your GPU cant handle that much layers")
+        print("#Oops! your GPU cant handle that much layers")
         unload_model()
         print(besttime)
         print(bestlayers)
@@ -71,15 +72,16 @@ def benchmark_gpu_layers(layers):
         print(f"####New best layers so far: {bestlayers}")
     else:
         rounds_without_improvement += 1
-    print(f"Time taken for this run: {timetook}")
-    print(f"Best time so far: {besttime}")
-    print(f"Best layers so far: {bestlayers}")
-    print(f"Rounds without improvement: {rounds_without_improvement}")
+    print(f"#Time taken for this run: {timetook}")
+    print(f"#Best time so far: {besttime}")
+    print(f"#Best layers so far: {bestlayers}")
+    print(f"#Rounds without improvement: {rounds_without_improvement}")
     if rounds_without_improvement > 10:
         return gpu_layers
     benchmark_gpu_layers(gpu_layers)
 
 def benchmark_threads(howmanythreads):
+
     #model type
     #how many threads to use
     global threads
@@ -90,12 +92,12 @@ def benchmark_threads(howmanythreads):
     global prompt
     timer = time.time()
     try:
-        print(f"\nNext test! Trying to load model with {threads} threads")
+        print(f"\n#Next test! Trying to load model with {threads} threads")
         load_model()
         gettingAlpaca(prompt)
         unload_model()
     except RuntimeError:
-        print("Oops! We cant handle that much threads")
+        print("#Oops! We cant handle that much threads")
         unload_model()
         print(besttime)
         print(bestlayers)
@@ -109,13 +111,51 @@ def benchmark_threads(howmanythreads):
         print(f"####New best thread number so far: {bestlayers}")
     else:
         rounds_without_improvement += 1
-    print(f"Time taken for this run: {timetook}")
-    print(f"Best time so far: {besttime}")
-    print(f"Best thread number so far: {bestlayers}")
-    print(f"Rounds without improvement: {rounds_without_improvement}")
+    print(f"#Time taken for this run: {timetook}")
+    print(f"#Best time so far: {besttime}")
+    print(f"#Best thread number so far: {bestlayers}")
+    print(f"#Rounds without improvement: {rounds_without_improvement}")
     if rounds_without_improvement > 10:
         return threads
     benchmark_threads(threads)
+
+def benchmark_batch_size(size_of_batch):
+    #model type
+    #how many threads to use
+    global threads
+    global besttime
+    global bestlayers
+    global rounds_without_improvement
+    batch_size=size_of_batch + 1
+    global prompt
+    timer = time.time()
+    try:
+        print(f"\n#Next test! Trying to load model with {batch_size} as batch_size")
+        load_model()
+        gettingAlpaca(prompt)
+        unload_model()
+    except RuntimeError:
+        print("#Oops! We cant handle that much batch_size")
+        unload_model()
+        print(besttime)
+        print(bestlayers)
+        return batch_size
+    timetook = time.time() - timer
+    if timetook < besttime:
+        besttime = timetook
+        bestlayers=batch_size
+        rounds_without_improvement=0
+        print(f"####New best time so far: {besttime}")
+        print(f"####New best batch_size so far: {bestlayers}")
+    else:
+        rounds_without_improvement += 1
+    print(f"#Time taken for this run: {timetook}")
+    print(f"#Best time so far: {besttime}")
+    print(f"#Best batch_size so far: {bestlayers}")
+    print(f"#Rounds without improvement: {rounds_without_improvement}")
+    if rounds_without_improvement > 150:
+        return batch_size
+    benchmark_batch_size(batch_size)
 
 def gettingAlpaca(prompt):
     #start the timer
@@ -140,7 +180,7 @@ def load_model():
     timer = time.time()
     print("Loading model...")
     global llm
-    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type, gpu_layers=gpu_layers,seed=5,threads=threads, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
+    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type, gpu_layers=gpu_layers,batch_size=batch_size, seed=5,threads=threads, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
     print("Model loaded!")
     print(f"Time taken to load model: {time.time() - timer}")
     return llm
@@ -151,13 +191,22 @@ def unload_model():
     llm = None
     print("Model unloaded!")
 
-selector = input("Select benchmark option (First run GPU Layers, then Threads):\n1. Benchmark GPU layers\n2. Benchmark threads\n3. Exit\n")
+selector = input("Select benchmark option (First run GPU Layers, then Threads):\n1. Benchmark GPU layers\n2. Benchmark threads\n3. Benchmark Batch_size\n4. Exit\n")
 if selector == "1":
     print("Benchmarking GPU layers")
     threads = int(input("How many threads do you want to use?\n"))
-    gpu_layers = 1
+    gpu_layers = int(input("How many GPU layers do you want to start with? \n"))
     benchmark_gpu_layers(gpu_layers)
 if selector == "2":
     gpu_layers = int(input("How many GPU layers do you want to use? (Run GPU Layers benchmark for optimal performance\n"))
     print("Benchmarking threads")
-    benchmark_threads(1)
+    threads = int(input("How many threads do you want to start with? \n"))
+    benchmark_threads(threads)
+if selector == "3":
+    gpu_layers = int(input("How many GPU layers do you want to use? (Run GPU Layers benchmark for optimal performance\n"))
+    threads = int(input("How many threads do you want to use? (Run Threads benchmark for optimal performance\n"))
+    print("Benchmarking batch_size")
+    batch_size = int(input("How many batch_size do you want to start with? \n"))
+    benchmark_batch_size(batch_size)
+if selector == "4":
+    exit()

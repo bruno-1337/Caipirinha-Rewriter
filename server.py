@@ -16,22 +16,35 @@ class MyFormatter(argparse.HelpFormatter):
 parser = argparse.ArgumentParser("simple_example", formatter_class=MyFormatter)
 parser.add_argument("-m", "-model", help="model to use", type=str, dest="model")
 parser.add_argument("-p", "-port", help="port the server will use", type=str, dest="port")
-args = parser.parse_args()
-# Get the model from the arguments
-ourmodel = args.model
+parser.add_argument("-t", "-threads", help="threads to use", type=int, dest="threads")
+parser.add_argument("-g", "-gpu_layers", help="gpu layers to use", type=int, dest="gpu_layers")
+parser.add_argument("-b", "-batch_size", help="batch size to use", type=int, dest="batch_size")
 
+
+
+args = parser.parse_args()
+
+
+# Load from arguments
+ourmodel = args.model
+batch_size = args.batch_size
+gpu_layers = args.gpu_layers
+threads = args.threads
 
 #setting default variables
 llm = None
 last_request_time = time.time()
 model_type="llama"
-#how many gpu layers to use (run benchmark.py to get optimal value)
-gpu_layers=34
+if gpu_layers is None:
+    gpu_layers = 1
+
+if batch_size is None:
+    batch_size = 8
+if threads is None:
+    threads = 1
 max_new_tokens=256
 temperature=0.8
 repetition_penalty=1.1
-#how many threads to use (run benchmark.py to get optimal value)
-threads=8
 
 
 scheduler = APScheduler()
@@ -79,8 +92,11 @@ def load_model():
     #load the model
     timer = time.time()
     print("Loading model...")
+    print("Using{} threads".format(threads))
+    print("Using{} gpu layers".format(gpu_layers))
+    print("Using{} batch size".format(batch_size))
     global llm
-    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type,threads=threads, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
+    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type,threads=threads,batch_size=batch_size, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
     print("Model loaded!")
     print(f"Time taken to load model: {time.time() - timer}")
     return llm
@@ -100,7 +116,7 @@ def check_and_unload():
     if llm is not None and difference > 180:
         llm = unload_model()
 
-
+#add the job to the scheduler
 scheduler.add_job(func=check_and_unload, trigger='interval', seconds=60, id='check_and_unload_job')
 
 
