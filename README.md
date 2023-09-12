@@ -40,21 +40,29 @@ CT_METAL=1 pip install ctransformers --no-binary ctransformers
 ## Usage
 After that you can start the server with
 ```sh
-python server.py -p [what port to open the server] -model [what model to load]
+python server.py -p -model -threads -gpu_layers -batch_size
 ```
-if not specified will use port 5000
+Options:
+```sh
+  [-h], [--help]       show this help message and exit
+  [-m], [-model]       model to use
+  [-p], [-port]        port the server will use
+  [-t], [-threads]     threads to use
+  [-g], [-gpu_layers]  gpu layers to use
+  [-b], [-batch_size]  batch size to use 
+```
+if you dont know what values to use, you can use benchmark.py to see what gets you the best performance for your pc
 
 After starting the server, open your browser and navigate to the options of the extension. 
-Enter the IP address (use "localhost" if local) and port number and save
-
-After that you can go on any webpage and highlight a text, when you press CTRL+D it will send the text to the server with the prompt:
+Enter the IP address (use "localhost" if local) and port number and save, then set the hotkey on your browser
+After that you can go on any webpage and highlight a text, when you press the hotkey it will send the prompt to the server. This is the default prompt:
 ```sh
 	### HUMAN:
   Rewrite this with proper grammar and more concise writing style: [HIGHLIGHTED_TEXT]";
 	### RESPONSE:
   Rewrite: ";
 ```
-Currently, I have tested the application only on [Llama2-7b-chat-uncensored](https://huggingface.co/TheBloke/llama2_7b_chat_uncensored-GGML)
+Currently, I have tested the application using [Llama2-7b-chat-uncensored](https://huggingface.co/TheBloke/llama2_7b_chat_uncensored-GGML)
 
 ## Issues
 
