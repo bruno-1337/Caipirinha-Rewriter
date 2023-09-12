@@ -4,7 +4,7 @@ This is a Chrome extension that integrates an AI-powered writing tool into your 
 
 ## Features
 
-- Highlight any text on a web page and press CTRL+D to send it as a prompt to the text-generation-webui API. The generated text will be copied to your clipboard and printed on the console.
+- Highlight any text on a web page and press CTRL+D to send it as a prompt to the server. The generated text will be copied to your clipboard and printed on the console.
 - Customize the parameters, such as length, temperature, top_p, and frequency_penalty.
 - Choose from different models.
 
