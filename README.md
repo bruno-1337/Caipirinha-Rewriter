@@ -1,10 +1,10 @@
-# Caipirinha Rewriter: Spice up your text with your own self-hosted AI
+# [Caipirinha Rewriter](https://github.com/bruno-1337/Caipirinha-Rewriter/) 🍹
 
 This is a Chrome extension that integrates an AI-powered writing tool into your browser, allowing you to interact with a self-hosted LLM model for rewriting text. With this extension, you can rewrite text for various purposes, such as essays, stories, poems, code, and more.
 
 ## Features
 
-- Highlight any text on a web page and press CTRL+D to send it as a prompt to the text-generation-webui API. The generated text will be copied to your clipboard and printed on the console.
+- Highlight any text on a web page and press CTRL+D to send it as a prompt to the server. The generated text will be copied to your clipboard and printed on the console.
 - Customize the parameters, such as length, temperature, top_p, and frequency_penalty.
 - Choose from different models.
 
@@ -17,12 +17,27 @@ To install this extension, follow these steps:
 3. Click on "Load unpacked" and select the folder where you cloned or downloaded this repository.
 4. You should see the extension icon on your browser toolbar.
 
-## Usage
-
 To use this extension, you need to have [CTransformers](https://github.com/marella/ctransformers) installed. You can easily install it with
 ```sh
 pip install ctransformers
 ```
+for GPU support you will also need:
+
+Nvidia users [CUDA support]
+```sh
+pip install ctransformers[cuda]
+```
+AMD users [ROCm support]
+```sh
+CT_HIPBLAS=1 pip install ctransformers --no-binary ctransformers
+```
+Apple users [Metal support]
+```sh
+CT_METAL=1 pip install ctransformers --no-binary ctransformers
+```
+
+
+## Usage
 After that you can start the server with
 ```sh
 python server.py -p [what port to open the server] -model [what model to load]
