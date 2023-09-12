@@ -36,12 +36,14 @@ llm = None
 last_request_time = time.time()
 model_type="llama"
 if gpu_layers is None:
+    print("No gpu layers specified, using 1")
     gpu_layers = 1
-
 if batch_size is None:
+    print("No batch size specified, using 8")
     batch_size = 8
 if threads is None:
-    threads = 1
+    print("No threads specified, using 0")
+    threads = 0
 max_new_tokens=256
 temperature=0.8
 repetition_penalty=1.1
@@ -92,9 +94,9 @@ def load_model():
     #load the model
     timer = time.time()
     print("Loading model...")
-    print("Using{} threads".format(threads))
-    print("Using{} gpu layers".format(gpu_layers))
-    print("Using{} batch size".format(batch_size))
+    print("#Using {} threads".format(threads))
+    print("#Using {} gpu layers".format(gpu_layers))
+    print("#Using {} batch size".format(batch_size))
     global llm
     llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type,threads=threads,batch_size=batch_size, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
     print("Model loaded!")
