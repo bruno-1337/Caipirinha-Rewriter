@@ -17,12 +17,27 @@ To install this extension, follow these steps:
 3. Click on "Load unpacked" and select the folder where you cloned or downloaded this repository.
 4. You should see the extension icon on your browser toolbar.
 
-## Usage
-
 To use this extension, you need to have [CTransformers](https://github.com/marella/ctransformers) installed. You can easily install it with
 ```sh
 pip install ctransformers
 ```
+for GPU support you will also need:
+
+Nvidia users [CUDA support]
+```sh
+pip install ctransformers[cuda]
+```
+AMD users [ROCm support]
+```sh
+CT_HIPBLAS=1 pip install ctransformers --no-binary ctransformers
+```
+Apple users [Metal support]
+```sh
+CT_METAL=1 pip install ctransformers --no-binary ctransformers
+```
+
+
+## Usage
 After that you can start the server with
 ```sh
 python server.py -p [what port to open the server] -model [what model to load]
