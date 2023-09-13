@@ -2,6 +2,12 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="assets/css/popup.css">
+		<style>
+		.body{
+			max-width: 500px;
+			margin: auto;
+		}
+		</style>
 	</head>
 	<body>
 	 <div id="escrevedor-wrapper">
@@ -11,7 +17,7 @@
 		<div id="escrevedor-containers">
 			<div class="escrevedor-form">
 				<label for="text">Prompt:</label>
-				<textarea name="text" id="escrevedor-text" placeholder="Insira mensagem aqui!"></textarea>
+				<textarea name="text" class="caixa" id="escrevedor-text" placeholder="Insira mensagem aqui!"></textarea>
 			</div>
 			<div class=escrevedor-buttons>
 				<p>Total: <span id="escrevedor-count"></span></p>
@@ -22,10 +28,11 @@
 				<button class="button primary" id="escrevedor-button">
 					Rewriter!
 				</button>
-			</div>
-			<button id="go-to-options">Go to options</button>
+			</div>	
+			<button id="go-to-options" class="go-to-options">Go to options</button>
 		</div>
 	 </div>
+		
 	 <script src="assets/js/popup.js"></script>
 	</body>
 </html>
