@@ -54,7 +54,7 @@ Options:
 if you dont know what values to use, you can use benchmark.py to see what gets you the best performance for your pc
 
 After starting the server, open your browser and navigate to the options of the extension. 
-Enter the IP address (use "localhost" if local) and port number and save, then set the hotkey on your browser
+Enter the IP address (use "localhost" if local) and port number and save, then set the hotkey on your browser (On Brave, it can be accessed by going to brave://extensions/shortcuts/)
 After that you can go on any webpage and highlight a text, when you press the hotkey it will send the prompt to the server. This is the default prompt:
 ```sh
 	### HUMAN:
@@ -62,6 +62,7 @@ After that you can go on any webpage and highlight a text, when you press the ho
 	### RESPONSE:
   Rewrite: ";
 ```
+
 Currently, I have tested the application using [Llama2-7b-chat-uncensored](https://huggingface.co/TheBloke/llama2_7b_chat_uncensored-GGML)
 
 ## Issues
