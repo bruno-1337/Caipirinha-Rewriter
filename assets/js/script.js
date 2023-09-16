@@ -1,4 +1,4 @@
-console.log("script.js loaded")
+console.log("Caipirinha Rewriter loaded")
 
 // Function to get the selected text
 function getText() {
@@ -14,19 +14,6 @@ function getText() {
         return "No text selected";
     }
 }
-
-// Get the selected text
-var output = getText();
-
-// Send a message to the background script with the selected text
-chrome.runtime.sendMessage({type: 'script.js_call', message: output}, function(response) {
-  // Set the cursor to wait
-  document.body.style.cursor = 'wait';
-  console.log("enviei pro background");
-    // Copy the result to the clipboard
-});
-
-
 
 function copyTextToClipboard(text) {
     // Create a textarea element where we can insert text to
@@ -50,13 +37,28 @@ function copyTextToClipboard(text) {
     document.body.removeChild(copyFrom);
   }
 
-
-  chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      // Check if the message is to call the returning_text function
-      if (request.message === "returning_text") {
-        // Call the copyTextToClipboard with the data recieved from the LLM
-        copyTextToClipboard(request.text);
-      }
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    // Check if the message is to call the returning_text function
+    if (request.message === "call_to_rewrite") 
+    { 
+      text = getText();
+      chrome.runtime.sendMessage({type: 'script.js_call', message: text}, function(response) {
+        // Set the cursor to wait
+        document.body.style.cursor = 'wait';
+        console.log("enviei pro background");
+          // Copy the result to the clipboard
+      });
     }
-  );
+  }
+);
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    // Check if the message is to call the returning_text function
+    if (request.message === "returning_text") {
+      // Call the copyTextToClipboard with the data recieved from the LLM
+      copyTextToClipboard(request.text);
+    }
+  }
+);

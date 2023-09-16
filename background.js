@@ -31,57 +31,22 @@ chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data)
     });}
 });
 
-// Add a listener to the popup button
-chrome.runtime.onMessage.addListener( data => {
-	if ( data.type === 'escrevedor_popup_button' ) {
-    console.log("CALLED ME HERE!")
-		escrevedor( data.message );
-	}
-  if ( data.type === 'script.js_call' ) {
-    console.log("CALLING ESCREVEDOR#$#@$!!!")
-    escrevedor( data.message );
-    return true;
-  }
-});
-
-chrome.runtime.onInstalled.addListener( () => {
-	chrome.contextMenus.create({
-		id: 'escrevedor',
-		title: "Escrevedor: %s", 
-		contexts:[ "selection" ]
-	});
-});
-
-
-// Add a listener to the context menu
-chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
-	if ( 'escrevedor' === info.menuItemId ) {
-    console.log("CALLED ME HERE!!!")
-		escrevedor( info.selectionText );
-	}
-} );
-
-
-
 
 var serverIP = "1234";
 var serverPort = "1234";
 var Language = "";
 var Pre_Prompt = "";
-// Function to send a POST request to the LLM
-const escrevedor = message => {
+// Get the server IP and port from storage
+chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) {
+  serverIP = data.ip;
+  serverPort = data.port;
+  Language = data.language;
+  Pre_Prompt = data.pre_prompt;
+});
 
 
-  // Get the server IP and port from storage
-  chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) {
-    serverIP = data.ip;
-    serverPort = data.port;
-    Language = data.language;
-    Pre_Prompt = data.pre_prompt;
-    console.log(Pre_Prompt)
-    console.log("IP: " + serverIP + " PORT: " + serverPort);
-  });
-  
+const escrevedor = message => 
+{
 	if (Language == "") {
     var Post_Prompt = "\n### RESPONSE:\nRewrite: ";
   }
@@ -142,23 +107,46 @@ const escrevedor = message => {
     });
 };
 
-// Function to inject script.js into the current tab
-function injectScript() {
-	// Get the current tab ID
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-	  let tabId = tabs[0].id;
-	  // Execute script.js in the main frame of the tab
-	  chrome.scripting.executeScript({
-		target: {tabId: tabId},
-		files: ["assets/js/script.js"]
-	  }).then(() => console.log("script injected"));
-	});
+// Add a listener to the popup button
+chrome.runtime.onMessage.addListener( data => {
+	if ( data.type === 'escrevedor_popup_button' ) {
+    console.log("CALLED ME HERE!")
+		escrevedor( data.message );
+	}
+  if ( data.type === 'script.js_call' ) {
+    console.log("CALLING ESCREVEDOR#$#@$!!!")
+    escrevedor( data.message );
+    return true;
   }
+});
+
+chrome.runtime.onInstalled.addListener( () => {
+	chrome.contextMenus.create({
+		id: 'escrevedor',
+		title: "Escrevedor: %s", 
+		contexts:[ "selection" ]
+	});
+});
+
+
+// Add a listener to the context menu
+chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
+	if ( 'escrevedor' === info.menuItemId ) {
+    console.log("CALLED ME HERE!!!")
+		escrevedor( info.selectionText );
+	}
+} );
 
 // Add a listener to the keyboard shortcut
 chrome.commands.onCommand.addListener((command) => {
   if (command == "Reescrever_Command") {
-	injectScript();
+
+    console.log("Reescrever_Command")
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      var activeTab = tabs[0];
+      chrome.tabs.sendMessage(activeTab.id, {"message": "call_to_rewrite"});
+    });
   }
   console.log(`Command "${command}" triggered`);
 });
+
