@@ -1,5 +1,6 @@
 console.log("script.js loaded")
 
+// Function to get the selected text
 function getText() {
     // Use window.getSelection to get the selected text
     var text = window.getSelection().toString();
@@ -14,9 +15,10 @@ function getText() {
     }
 }
 
-// Get the output of your function
+// Get the selected text
 var output = getText();
-// Send a message to background.js with the output as data
+
+// Send a message to the background script with the selected text
 chrome.runtime.sendMessage({type: 'script.js_call', message: output}, function(response) {
   // Set the cursor to wait
   document.body.style.cursor = 'wait';
