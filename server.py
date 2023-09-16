@@ -1,3 +1,4 @@
+# Import the required modules
 from ctransformers import AutoModelForCausalLM
 from flask import Flask, request, jsonify
 from flask_cors import cross_origin, CORS
@@ -5,7 +6,14 @@ from flask_apscheduler import APScheduler
 import time 
 import argparse
 
-# Argument Parser
+# Define some constants
+MODEL_TYPE = "llama"
+MAX_NEW_TOKENS = 256
+TEMPERATURE = 0.8
+REPETITION_PENALTY = 1.1
+TIMEOUT = 120 # seconds to unload the model if no requests
+
+# Create a custom formatter for the argument parser
 class MyFormatter(argparse.HelpFormatter):
     def _format_action_invocation(self, action):
         if action.option_strings:
@@ -13,46 +21,24 @@ class MyFormatter(argparse.HelpFormatter):
             return ", ".join(parts)
         else:
             return super()._format_action_invocation(action)
+
+# Parse the arguments from the command line
 parser = argparse.ArgumentParser("simple_example", formatter_class=MyFormatter)
-parser.add_argument("-m", "-model", help="model to use", type=str, dest="model")
-parser.add_argument("-p", "-port", help="port the server will use", type=str, dest="port")
-parser.add_argument("-t", "-threads", help="threads to use", type=int, dest="threads")
-parser.add_argument("-g", "-gpu_layers", help="gpu layers to use", type=int, dest="gpu_layers")
-parser.add_argument("-b", "-batch_size", help="batch size to use", type=int, dest="batch_size")
-
-
+parser.add_argument("-m", "-model", help="model to use", type=str, dest="model", required=True)
+parser.add_argument("-p", "-port", help="port the server will use", type=str, dest="port", default=5000)
+parser.add_argument("-t", "-threads", help="threads to use", type=int, dest="threads", default=0)
+parser.add_argument("-g", "-gpu_layers", help="gpu layers to use", type=int, dest="gpu_layers", default=1)
+parser.add_argument("-b", "-batch_size", help="batch size to use", type=int, dest="batch_size", default=8)
 
 args = parser.parse_args()
 
+# Initialize some global variables
+llm = None # the model object
+last_request_time = time.time() # the last time a request was made
 
-# Load from arguments
-ourmodel = args.model
-batch_size = args.batch_size
-gpu_layers = args.gpu_layers
-threads = args.threads
-
-#setting default variables
-llm = None
-last_request_time = time.time()
-model_type="llama"
-if gpu_layers is None:
-    print("No gpu layers specified, using 1")
-    gpu_layers = 1
-if batch_size is None:
-    print("No batch size specified, using 8")
-    batch_size = 8
-if threads is None:
-    print("No threads specified, using 0")
-    threads = 0
-max_new_tokens=256
-temperature=0.8
-repetition_penalty=1.1
-
-
-scheduler = APScheduler()
-
-# Create a Flask app object
+# Create a Flask app object and a scheduler object
 app = Flask(__name__)
+scheduler = APScheduler()
 
 # Define a route for the /generate endpoint
 @app.route("/generate", methods=["POST"])
@@ -61,80 +47,77 @@ def generate():
     # Get the data from the request body as JSON
     data = request.get_json()
     # Get the prompt from the data
+    prompt = data["prompt"]
+    # Load the model if it is not loaded yet
     global llm
     if llm is None:
         print("Model is not loaded!")
         llm = load_model()
-    prompt = data["prompt"]
+    # Update the last request time with the current time
+    global last_request_time
+    last_request_time = time.time()
     # Call the function with the prompt and get the output
-    output = gettingAlpaca(prompt)
+    output = generate_text(prompt)
     # Return the output as JSON
     return jsonify(output)
 
-
-def gettingAlpaca(prompt):
-    #start the timer
+def generate_text(prompt):
+    # Start the timer
     start_time = time.time()
-    
-    global last_request_time
-    # Update the last request time with the current time
-    last_request_time = time.time()
+    # Generate the text using the model and the prompt
     output = llm(prompt)
-    #get the tokens per second
+    # Get the number of tokens and the elapsed time
     num_tokens = len(output)
     end_time = time.time()
     elapsed_time = end_time - start_time
+    # Calculate and print the tokens per second
     tokens_per_second = num_tokens / elapsed_time
     print (output)
-    #print the tokens per second
     print(f"\n\n#Tokens per second: {tokens_per_second}")
+    # Return the output text
     return output
 
 def load_model():
-    #load the model
+    # Start the timer
     timer = time.time()
+    # Print some information about the model parameters
     print("Loading model...")
-    print("#Using {} threads".format(threads))
-    print("#Using {} gpu layers".format(gpu_layers))
-    print("#Using {} batch size".format(batch_size))
+    print(f"#Using {args.threads} threads")
+    print(f"#Using {args.gpu_layers} gpu layers")
+    print(f"#Using {args.batch_size} batch size")
+    # Load and return the model object using the arguments
     global llm
-    llm = AutoModelForCausalLM.from_pretrained(ourmodel, model_type=model_type,threads=threads,batch_size=batch_size, gpu_layers=gpu_layers, max_new_tokens=max_new_tokens,temperature=temperature,repetition_penalty=repetition_penalty) 
+    llm = AutoModelForCausalLM.from_pretrained(args.model, model_type=MODEL_TYPE, threads=args.threads, batch_size=args.batch_size, gpu_layers=args.gpu_layers, max_new_tokens=MAX_NEW_TOKENS, temperature=TEMPERATURE, repetition_penalty=REPETITION_PENALTY) 
+    # Print some information about the loading time 
     print("Model loaded!")
     print(f"Time taken to load model: {time.time() - timer}")
     return llm
 
 def unload_model():
-    # Unload the model
+    # Unload and delete the model object
     global llm
+    del llm 
     llm = None
+    
+    # Print a message to indicate that the model is unloaded
     print("Model unloaded!")
 
 def check_and_unload():
-    global last_request_time
-    global llm
-    current_time = time.time()
-    difference = current_time - last_request_time
-    #if the difference is more than 180 seconds, unload the model
-    if llm is not None and difference > 120:
-        llm = unload_model()
+    
+     # Check if there is a model object and if it has been idle for more than TIMEOUT seconds 
+     global last_request_time 
+     global llm 
+     current_time = time.time() 
+     difference = current_time - last_request_time 
+     if llm is not None and difference > TIMEOUT: 
+         # Unload the model object 
+         unload_model()
 
-#add the job to the scheduler
+# Add the job to the scheduler to check and unload the model every 60 seconds
 scheduler.add_job(func=check_and_unload, trigger='interval', seconds=60, id='check_and_unload_job')
-
-
-# Check if args.port have been set, if not, set it to 5000
-if args.port is None:
-    print("No port specified, using 5000")
-    args.port = 5000
 
 # Run the app
 if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
     app.run(host="0.0.0.0", port=args.port, debug=True)
-    
-    
-
-
-
-
