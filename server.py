@@ -115,7 +115,7 @@ def check_and_unload():
     current_time = time.time()
     difference = current_time - last_request_time
     #if the difference is more than 180 seconds, unload the model
-    if llm is not None and difference > 180:
+    if llm is not None and difference > 120:
         llm = unload_model()
 
 #add the job to the scheduler
@@ -131,7 +131,7 @@ if args.port is None:
 if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
-    app.run(port=args.port, debug=True)
+    app.run(host="0.0.0.0", port=args.port, debug=True)
     
     
 
