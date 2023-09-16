@@ -24,6 +24,13 @@
 		"128": "/assets/icons/128.png"
 	  }
 	},
+	"content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["assets/js/script.js"]
+        }
+    ],
+    "host_permissions": ["<all_urls>"],
 	"icons": {
 		"48": "/assets/icons/48.png",
 		"128": "/assets/icons/128.png"
