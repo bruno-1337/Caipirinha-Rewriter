@@ -1,3 +1,37 @@
+//Default variables
+
+// Settings default values
+chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) 
+{
+  if (data.ip == undefined) {
+    chrome.storage.sync.set({
+      ip: "localhost"
+    }, function() {
+      console.log("No IP set, using localhost")
+    });}
+
+  if (data.port == undefined) {
+    chrome.storage.sync.set({
+      port: "5000"
+    }, function() {
+      console.log("No port set, using 5000")
+    });}
+  if (data.language == undefined) {
+    chrome.storage.sync.set({
+      language: ""
+    }, function() {
+      console.log("No language set, using none")
+    });}
+  if (data.pre_prompt == undefined) {
+    chrome.storage.sync.set({
+      pre_prompt: "### HUMAN:\nRewrite this with proper grammar and more concise writing style, you will rewrite in the same language as the next message: "
+    }, function() 
+    {
+      console.log("No prompt set, setting default")
+    });}
+});
+
+// Add a listener to the popup button
 chrome.runtime.onMessage.addListener( data => {
 	if ( data.type === 'escrevedor_popup_button' ) {
     console.log("CALLED ME HERE!")
@@ -19,6 +53,14 @@ chrome.runtime.onInstalled.addListener( () => {
 });
 
 
+// Add a listener to the context menu
+chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
+	if ( 'escrevedor' === info.menuItemId ) {
+    console.log("CALLED ME HERE!!!")
+		escrevedor( info.selectionText );
+	}
+} );
+
 
 
 
@@ -26,17 +68,19 @@ var serverIP = "1234";
 var serverPort = "1234";
 var Language = "";
 var Pre_Prompt = "";
-
-chrome.contextMenus.onClicked.addListener( ( info, tab ) => {
-	if ( 'escrevedor' === info.menuItemId ) {
-    console.log("CALLED ME HERE!!!")
-		escrevedor( info.selectionText );
-	}
-} );
+// Function to send a POST request to the LLM
 const escrevedor = message => {
 
 
   // Get the server IP and port from storage
+  chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) {
+    serverIP = data.ip;
+    serverPort = data.port;
+    Language = data.language;
+    Pre_Prompt = data.pre_prompt;
+    console.log(Pre_Prompt)
+    console.log("IP: " + serverIP + " PORT: " + serverPort);
+  });
   
 	if (Language == "") {
     var Post_Prompt = "\n### RESPONSE:\nRewrite: ";
@@ -98,6 +142,7 @@ const escrevedor = message => {
     });
 };
 
+// Function to inject script.js into the current tab
 function injectScript() {
 	// Get the current tab ID
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -110,21 +155,10 @@ function injectScript() {
 	});
   }
 
-
+// Add a listener to the keyboard shortcut
 chrome.commands.onCommand.addListener((command) => {
   if (command == "Reescrever_Command") {
-	// Get the selected text
-  chrome.storage.sync.get(["ip", "port", "language", "pre_prompt"], function(data) {
-    serverIP = data.ip;
-    serverPort = data.port;
-    Language = data.language;
-    Pre_Prompt = data.pre_prompt;
-    console.log(Pre_Prompt)
-    console.log("IP: " + serverIP + " PORT: " + serverPort);
-  });
 	injectScript();
-	//getText();
-	// Call our function with the selected text as an argument
   }
   console.log(`Command "${command}" triggered`);
 });
