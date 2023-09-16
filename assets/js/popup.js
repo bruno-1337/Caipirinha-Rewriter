@@ -1,31 +1,37 @@
 const text = document.getElementById( 'escrevedor-text' );
-const escrevedor = document.getElementById( 'escrevedor-button' );
-const reset = document.getElementById( 'escrevedor-reset' );
-const counter = document.getElementById( 'escrevedor-count' );
+const save_new_prompt = document.getElementById( 'save_new_prompt_button' );
+const current_prompt = document.getElementById( 'current_prompt' );
+const new_prompt = document.getElementById( 'new-prompt' );
 
-chrome.storage.local.get( ['escrevedorCount'], data => {
-	let value = data.escrevedorCount || 0;
-	counter.innerHTML = value;
-} );
 
+
+// Get the current prompt and count from storage and display them
+chrome.storage.sync.get(["pre_prompt"], function(data) 
+{
+	//let prompt = data.pre_prompt || "No prompt set";
+	//current_prompt.innerHTML = prompt;
+	document.getElementById("new-prompt").value = data.pre_prompt;
+});
+
+// Add a listener to the storage change event
 chrome.storage.onChanged.addListener( ( changes, namespace ) => {
 	if ( changes.escrevedorCount ) {
 		let value = changes.escrevedorCount.newValue || 0;
 		counter.innerHTML = value;
 	}
 });
-
-reset.addEventListener( 'click', () => {
-	chrome.storage.local.clear();
-	text.value = '';
-} );
-
-escrevedor.addEventListener( 'click', () => {
-	chrome.runtime.sendMessage( '', {
-		type: 'escrevedor_popup_button',
-		message: text.value
-	});
-} );
+// Add a click event listener to the save button
+save_new_prompt.addEventListener( 'click', () => 
+{
+	var newPrompt = document.getElementById("new-prompt").value;
+	chrome.storage.sync.set({
+		pre_prompt: newPrompt
+	  }, function() {
+		// Display a confirmation message
+		console.log("Saved the new prompt!")
+	  });}
+ );
+// Go to options button
 document.querySelector('#go-to-options').addEventListener('click', function() {
 	if (chrome.runtime.openOptionsPage) {
 	  chrome.runtime.openOptionsPage();

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<link rel="stylesheet" href="assets/css/popup.css">
 		<style>
 		.body{
@@ -12,21 +13,18 @@
 	<body>
 	 <div id="escrevedor-wrapper">
 		<div id="escrevedor-header">
-			<h1>Caipirinha Rewriter</h1>
+			<h1>Caipirinha Rewriter 🍹</h1>
 		</div>
 		<div id="escrevedor-containers">
 			<div class="escrevedor-form">
-				<label for="text">Prompt:</label>
-				<textarea name="text" class="caixa" id="escrevedor-text" placeholder="Insira mensagem aqui!"></textarea>
+				<label for="text">Quick edit the current prompt:</label>
+				<textarea name="new-prompt" rows="5" cols="40" id="new-prompt" placeholder="Insert the new prompt here"></textarea>
+				
 			</div>
+			<br>
 			<div class=escrevedor-buttons>
-				<p>Total: <span id="escrevedor-count"></span></p>
-
-				<button class="button" id="escrevedor-reset">
-					Reset
-				</button>
-				<button class="button primary" id="escrevedor-button">
-					Rewriter!
+				<button class="button primary" id="save_new_prompt_button">
+					Update prompt
 				</button>
 			</div>	
 			<button id="go-to-options" class="go-to-options">Go to options</button>
