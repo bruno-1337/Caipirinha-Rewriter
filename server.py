@@ -40,10 +40,36 @@ last_request_time = time.time() # the last time a request was made
 app = Flask(__name__)
 scheduler = APScheduler()
 
-# Define a route for the /generate endpoint
+# Import threading module
+import threading
+
+# Create a global lock object
+lock = threading.Lock()
+
+# Define a decorator function that checks the lock status
+def check_lock(func):
+    def wrapper(*args, **kwargs):
+        # Try to acquire the lock
+        if lock.acquire(blocking=False):
+            # If successful, execute the original function
+            try:
+                return func(*args, **kwargs)
+            finally:
+                # Release the lock after finishing
+                lock.release()
+                print("Lock released!")
+        else:
+            # If not successful, return an error message
+            return jsonify({"error": "Server is busy, please try again later"})
+    return wrapper
+
+# Use the decorator on your route functions
 @app.route("/generate", methods=["POST"])
 @cross_origin()
+@check_lock
 def generate():
+    # Your original code here
+
     # Get the data from the request body as JSON
     data = request.get_json()
     # Get the prompt from the data
