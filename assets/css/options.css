@@ -1,0 +1,68 @@
+/* options.css */
+
+/* Use a custom font from Google Fonts */
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+/* Define the main color of the extension */
+:root {
+  --main-color: #ff951b;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--main-color); /* Use the main color as the background */
+  margin: 20px;
+}
+
+h1 {
+  color: #ffffff; /* Use white for the title */
+  text-align: center;
+  font-size: 36px;
+}
+
+h2 {
+  color: #ffffff;
+  font-size: 18px;
+  text-align: center;
+}
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px; /* Add some rounded corners to the form */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Add some shadow to the form */
+  background-color: #ffffff; /* Use white for the form background */
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+  font-weight: bold;
+  vertical-align: baseline; 
+}
+
+input, textarea {
+  display: inline-block;
+  width: 400px;
+}
+
+/* Add this line to align the textarea with the top of the label */
+textarea {
+  vertical-align: top;
+}
+
+input[type="button"] {
+  width: auto;
+  margin-left: 150px;
+  padding: 10px; /* Add some padding to the button */
+  border: none; /* Remove the default border of the button */
+  border-radius: 5px; /* Add some rounded corners to the button */
+  color: #ffffff; /* Use white for the button text */
+  background-color: var(--main-color); /* Use the main color for the button background */
+}
+
+input[type="button"]:hover {
+  cursor: pointer; /* Change the cursor to a pointer when hovering over the button */
+}
+
