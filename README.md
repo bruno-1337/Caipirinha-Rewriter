@@ -17,9 +17,9 @@ To install this extension, follow these steps:
 3. Click on "Load unpacked" and select the folder where you cloned or downloaded this repository.
 4. You should see the extension icon on your browser toolbar.
 
-To use this extension, you need to have [CTransformers](https://github.com/marella/ctransformers) installed. You can easily install it with
+To use this extension, you need to have some dependencies installed. You can easily install it with
 ```sh
-pip install ctransformers
+pip install ctransformers flask flask-cors flask-apscheduler
 ```
 for GPU support you will also need:
 
@@ -58,9 +58,7 @@ Enter the IP address (use "localhost" if local) and port number and save, then s
 After that you can go on any webpage and highlight a text, when you press the hotkey it will send the prompt to the server. This is the default prompt:
 ```sh
 	### HUMAN:
-  Rewrite this with proper grammar and more concise writing style: [HIGHLIGHTED_TEXT]";
-	### RESPONSE:
-  Rewrite: ";
+  Rewrite this with proper grammar and more concise writing style: "
 ```
 
 Currently, I have tested the application using [Llama2-7b-chat-uncensored](https://huggingface.co/TheBloke/llama2_7b_chat_uncensored-GGML)
