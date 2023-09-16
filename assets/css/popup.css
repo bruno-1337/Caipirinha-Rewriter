@@ -1,123 +1,94 @@
-body {
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
-    text-align: center;
-    justify-content: center;
+/* popup.css */
 
+/* Use the same custom font from options.css */
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+/* Use the same main color from options.css */
+:root {
+  --main-color: #f5910f;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--main-color); /* Use the main color as the background */
+  text-align: center;
+  justify-content: center;
 }
 
 #escrevedor-wrapper {
-    padding: 5px;
-    font-family: Roboto, system-ui, sans-serif;
-    color: rgb(236, 236, 236); 
-    color: rgb( 26, 115, 232 );;   
+  padding: 20px;
+  border-radius: 10px; /* Add some rounded corners to the wrapper */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Add some shadow to the wrapper */
+  background-color: #ffffff; /* Use white for the wrapper background */
 }
 
 #escrevedor-header h1 {
-    font-size: 18px;
+    font-size: 36px;
     margin: 0;
     margin-bottom: 10px;
-    font-size: 25px;
-    color: rgb( 26, 115, 232 );
-}
-
-.button {
-    font-family: Roboto, system-ui, sans-serif;
-    align-items: center;
-    border: 1px solid rgb( 218, 220, 224 );
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: rgb( 26, 115, 232 );
-    cursor: pointer;
-    display: inline-flex;
-    flex-shrink: 0;
-    font-weight: 500;
-    height: 32px;
-    justify-content: center;
-    min-width: 5.14em;
-    outline-width: 0;
-    padding: 8px 16px;
-    position: relative;
-    user-select: none;
-    background: white;
-    margin: 10px 0 5px 10px;
-    transition: 0.7s;
-}
+    color: var(--main-color); /* Use the main color for the title */
+    white-space: nowrap; /* Add this line to prevent text wrapping */
+    overflow: hidden; /* Add this line to hide overflow text */
+  }
+  
 
 
 .escrevedor-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-style: italic;
-    font-size: 20px;
-    margin-right: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.button:hover {
-    border-color: 210, 227, 252;
-    font-size: 14.3px;
-    color: white;
-    background-color: rgb( 26, 115, 232 );
-    
+.button, .go-to-options {
+  font-family: 'Roboto', sans-serif;
+  align-items: center;
+  border: none; /* Remove the default border of the buttons */
+  border-radius: 5px; /* Add some rounded corners to the buttons */
+  box-sizing: border-box;
+  color: #ffffff; /* Use white for the button text */
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-weight: bold; /* Make the button text bold */
+  height: 32px;
+  justify-content: center;
+  min-width: 5.14em;
+  outline-width: 0;
+  padding: 10px; /* Add some padding to the buttons */
+  position: relative;
+  user-select: none;
 }
 
-.button.primary {
-    background: white;
-    color: rgb( 26, 115, 232 );
-    transition-duration: 0.5s;
-    border: solid 1px rgb(221, 224, 228);
-    
+.button {
+    background-color: var(--main-color); /* Use the main color for the button background */
+    margin-right: 10px; /* Add some margin between the buttons */
 }
-.button.primary:hover {
-    background: rgba( 26, 115, 232, 0.9 );
-    box-shadow: 0 1px 2px 0 rgba( 66, 133, 244, .3),
-    0 1px 3px 1px rgba( 66, 133, 244, .15);
-    color: white;
-    font-size: 14px;
+
+.go-to-options {
+    background-color: #eeeeee; /* Use a lighter shade of white for the go-to-options button background */
+    color: var(--main-color); /* Use the main color for the go-to-options button text */
+    margin-left: 10px; /* Add some margin between the buttons */
+}
+
+.button:hover, .go-to-options:hover {
+    cursor: pointer; /* Change the cursor to a pointer when hovering over the buttons */
+    transform: scale(1.1); /* Make the buttons slightly bigger when hovering over them */
 }
 
 textarea {
-    border: 2px solid rgba( 26, 115, 232, 0.4 );
+    border: 2px solid orange; /* Add this line to create an orange outline */
     padding: 8px;
-    border-radius: 4px;
+    border-radius: 4px; /* Add some rounded corners to the textarea */
     display: block;
-    width: 224px;
+    width: auto; /* Make the textarea adjust its width automatically */
     margin-top: 5px;
-    font-family: Roboto, system-ui, sans-serif;
-    margin: 120px;
+    font-family: 'Roboto', sans-serif;
+    margin-left:auto; 
+    margin-right:auto; 
 }
 
-.escrevedor-buttons p {
-    margin: 10px 0 5px 10px;
-}
-.go-to-options{
-    font-family:  Roboto, system-ui, sans-serif;
+.escrevedor-buttons {
+    display: inline-flex; /* Change this from flex to inline-flex */
     align-items: center;
-    border: 1px solid rgb( 218, 220, 224 );
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: rgb( 26, 115, 232 );
-    cursor: pointer;
-    display: inline-flex;
-    flex-shrink: 0;
-    font-weight: 500;
-    height: 32px;
     justify-content: center;
-    min-width: 5.14em;
-    outline-width: 0;
-    padding: 8px 16px;
-    position: relative;
-    user-select: none;
-    background: white;
-    margin: 10px 0 5px 10px;
-    margin-right: 60px;
-    transition: 0.7s;
-    margin-left: 60px;
-}
-.go-to-options:hover{
-    font-size: 14px;
-    color: white;
-    background-color: rgb( 26, 115, 232 );
-}
+  }
